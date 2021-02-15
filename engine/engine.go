@@ -92,7 +92,6 @@ var pieceVals = map[string]float64{
 // for the black (min) player.
 func evaluatePosition(pos *chess.Position) float64 {
 	str := pos.String()
-
 	var acc float64
 
 	for piece, value := range pieceVals {
