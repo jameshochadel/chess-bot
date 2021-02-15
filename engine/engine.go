@@ -14,7 +14,6 @@ import (
 func BestMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 	var scoredMoves map[chess.Move]float64
 	startingDepth := 10
-
 	for _, move := range pos.ValidMoves() {
 		scoredMoves[*move] = minimax(pos.Update(move), startingDepth, maxPlayer)
 	}

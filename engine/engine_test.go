@@ -9,14 +9,17 @@ import (
 
 func TestEvaluatePosition(t *testing.T) {
 	cases := []struct{
-		Pos *chess.Position
+		Name string
+		PositionFEN string
 		Expected float64
 	}{
-		{ &chess.Position{}, 0.0 },
+		{ "starting position", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 0.0 },
 	}
 	for _, tc := range cases {
-		t.Run(fmt.Sprintf("%v + %v", tc.Pos.Board().String(), tc.Expected), func(t *testing.T) {
-			actual := evaluatePosition(tc.Pos)
+		t.Run(fmt.Sprintf("%v + %v", tc.PositionFEN, tc.Expected), func(t *testing.T) {
+			pos := chess.Position{}
+			pos.UnmarshalText([]byte(tc.PositionFEN))
+			actual := evaluatePosition(&pos)
 			if actual != tc.Expected {
 				t.Fatal("failed")
 			}
