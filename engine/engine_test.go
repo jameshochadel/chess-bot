@@ -10,14 +10,15 @@ import (
 func TestEvaluatePosition(t *testing.T) {
 	cases := []struct{
 		Name string
-		PositionFEN string
+		FEN string
 		Expected float64
 	}{
 		{ "starting position", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 0.0 },
+		{ "starting position", "rnbqkbnr/ppppppp1/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1.0 },
 	}
 	for _, tc := range cases {
-		t.Run(fmt.Sprintf("%v + %v", tc.PositionFEN, tc.Expected), func(t *testing.T) {
-			updateFunc, err := chess.FEN(tc.PositionFEN)
+		t.Run(fmt.Sprintf("%v + %v", tc.FEN, tc.Expected), func(t *testing.T) {
+			updateFunc, err := chess.FEN(tc.FEN)
 			if err != nil {
 				t.Fatal("applying FEN to game", err)
 			}

@@ -97,9 +97,8 @@ func evaluatePosition(pos *chess.Position) float64 {
 	for piece, value := range pieceVals {
 		acc += float64(strings.Count(str, piece)) * value
 	}
-	strings.Count(str, "q")
-	// count number of each piece
-	return 0.0
+
+	return acc
 }
 
 // randomBool generates a pseudorandom true or false value -- a 'coin flip'.
