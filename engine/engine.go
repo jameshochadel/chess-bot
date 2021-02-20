@@ -23,8 +23,6 @@ func BestMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 		bestValue float64
 	)
 
-	// compareFunc := func(a float64, b float64, )
-
 	for m, v := range scoredMoves {
 		if bestMove == nil {
 			bestMove = &m
@@ -42,33 +40,27 @@ func BestMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 	return bestMove
 }
 
+// minimax estimates the value of a position pos using the minimax algorithm,
+// which minimizes loss for the given player, assuming the other player always
+// makes an optimal move.
 func minimax(pos *chess.Position, depth int, maxPlayer bool) (posValue float64) {
 	if depth == 0 || len(pos.ValidMoves()) == 0 {
 		return evaluatePosition(pos)
 	}
+
 	if maxPlayer {
-		var maxMove float64
-		for i, m := range pos.ValidMoves() {
-			p := pos.Update(m)
-			if i == 0 {
-				maxMove = minimax(p, depth - 1, false)
-			} else {
-				maxMove = math.Max(maxMove, minimax(p, depth - 1, false))
-			}
+		posValue = -9999
+		for _, m := range pos.ValidMoves() {
+			posValue = math.Max(posValue, minimax(pos.Update(m), depth - 1, false))
 		}
 	} else {
-		var minMove float64
-		for i, m := range pos.ValidMoves() {
-			p := pos.Update(m)
-			if i == 0 {
-				minMove = minimax(p, depth - 1, true)
-			} else {
-				minMove = math.Min(minMove, minimax(p, depth - 1, true))
-			}
+		posValue = 9999
+		for _, m := range pos.ValidMoves() {
+			posValue = math.Min(posValue, minimax(pos.Update(m), depth - 1, true))
 		}
 	}
 
-	return 0
+	return posValue
 }
 
 // pieceVals uses Forsyth-Edwards Notation (FEN) conventions to represent pieces.
