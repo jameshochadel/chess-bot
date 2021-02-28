@@ -13,7 +13,17 @@ import (
 // synchronously, but can probably be made concurrent with goroutines.
 func SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 	startingDepth := 3
-	return minimax(pos, startingDepth, maxPlayer).bestMove
+	return minimax(pos, startingDepth, maxPlayer).move
+}
+
+// positionScore is a tuple for tracking the value of a position and the move that should
+// be made to achieve that value.
+type positionScore struct {
+	// value is a heuristic value of the board. For more, see evaluatePosition.
+	value float64
+	// move is the optimal next move that should be made for the current player to achieve
+	// the value `positionScore.value` of the position.
+	move *chess.Move
 }
 
 // minimax estimates the value of a position pos using the minimax algorithm,
@@ -26,38 +36,43 @@ func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 		}
 	}
 
-	scored := &positionScore {}
+	bestScore := &positionScore {}
 	var comparator func(float64, float64) float64
 
 	if maxPlayer {
-		scored.value = -9999
+		bestScore.value = -9999
 		comparator = math.Max
 	} else {
-		scored.value = 9999
+		bestScore.value = 9999
 		comparator = math.Min
 	}
 
 	for _, m := range pos.ValidMoves() {
-		scored = best(comparator, scored, minimax(pos.Update(m), depth - 1, !maxPlayer))
+		candidate := &positionScore{
+			move: m,
+			value: minimax(pos.Update(m), depth - 1, !maxPlayer).value,
+		}
+
+		bestScore = best(comparator, bestScore, candidate)
 	}
 
-	return scored
-}
-
-type positionScore struct {
-	// value is a heuristic value of the board. For more, see evaluatePosition.
-	value float64
-	// bestMove is the optimal next move that should be made for the current player to achieve
-	// the best value of the position.
-	bestMove *chess.Move
+	return bestScore
 }
 
 // best compares two positions and returns the 'better' position, as determined by the 
-// comparator function. In the case that the positions are of equal value, position a
+// comparator function. In the case that the positions are of equal value, position `a`
 // is returned.
 func best(comparator func(float64, float64) float64, a, b *positionScore) *positionScore {
-	// remember to check for nil in struct values
-	return nil
+	if a.value == b.value {
+		return a
+	} else {
+		best := comparator(a.value, b.value)
+		if best == a.value {
+			return a
+		} else {
+			return b
+		}
+	}
 }
 
 // pieceVals uses Forsyth-Edwards Notation (FEN) conventions to represent pieces.
