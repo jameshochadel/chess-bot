@@ -2,6 +2,7 @@ package engine
 
 import (
 	"fmt"
+	"math"
 	"testing"
 
 	"github.com/notnil/chess"
@@ -40,4 +41,91 @@ func TestEvaluatePosition(t *testing.T) {
 
 func TestMinimax(t *testing.T) {
 	
+}
+
+func TestBest(t *testing.T) {
+	cases := []struct {
+		Name string
+		Comparator func(float64, float64) float64
+		A *positionScore
+		B *positionScore
+		ExpectingA bool
+	}{
+		{
+			"Max, A == B",
+			math.Max,
+			&positionScore {
+				value: 0.0,
+			},
+			&positionScore{
+				value: 0.0,
+			},
+			true,
+		},
+		{
+			"Max, A > B",
+			math.Max,
+			&positionScore {
+				value: 1.0,
+			},
+			&positionScore{
+				value: 0.0,
+			},
+			true,
+		},
+		{
+			"Max, A < B",
+			math.Max,
+			&positionScore {
+				value: 0.0,
+			},
+			&positionScore{
+				value: 1.0,
+			},
+			false,
+		},
+		{
+			"Min, A == B",
+			math.Min,
+			&positionScore {
+				value: 0.0,
+			},
+			&positionScore{
+				value: 0.0,
+			},
+			true,
+		},
+		{
+			"Min, A > B",
+			math.Min,
+			&positionScore {
+				value: 1.0,
+			},
+			&positionScore{
+				value: 0.0,
+			},
+			false,
+		},
+		{
+			"Min, A < B",
+			math.Min,
+			&positionScore {
+				value: 0.0,
+			},
+			&positionScore{
+				value: 1.0,
+			},
+			true,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%v", tc.Name), func(t *testing.T) {
+			actual := best(tc.Comparator, tc.A, tc.B)
+			if tc.ExpectingA && actual != tc.A {
+			 	t.Fatalf("expected A, got B", )
+			} else if !tc.ExpectingA && actual == tc.A {
+				t.Fatalf("expected B, got B")
+			}
+		})
+	}
 }
