@@ -16,7 +16,8 @@ func main() {
 		// how to do context with timeout? basically want to go as far as possible until timeout.
 		// would need to return some results eagerly though?
 		// maybe benchmark to get a sense of how far it can get
-		bestMove := engine.BestMove(game.Position(), game.Position().Turn() == chess.White)
+		bestMove := engine.SuggestedMove(game.Position(), game.Position().Turn() == chess.White)
+		fmt.Printf("Player %v making move %v", game.Position().Turn(), bestMove.String())
 		if err := game.Move(bestMove); err != nil {
 			wrapped := fmt.Errorf("making move %v: %w", bestMove, err)
 			log.Fatalf("game state %v, err %v", game.String(), wrapped)

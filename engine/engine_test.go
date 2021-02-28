@@ -37,3 +37,7 @@ func TestEvaluatePosition(t *testing.T) {
 		})		
 	}
 }
+
+func TestMinimax(t *testing.T) {
+	
+}

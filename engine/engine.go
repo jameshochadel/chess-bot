@@ -9,58 +9,55 @@ import (
 	"github.com/notnil/chess"
 )
 
-// bestMove calculates the most advantageous move for the player. It currently works
+// SuggestedMove calculates the most advantageous move for the player. It currently works
 // synchronously, but can probably be made concurrent with goroutines.
-func BestMove(pos *chess.Position, maxPlayer bool) *chess.Move {
-	var scoredMoves map[chess.Move]float64
-	startingDepth := 10
-	for _, move := range pos.ValidMoves() {
-		scoredMoves[*move] = minimax(pos.Update(move), startingDepth, maxPlayer)
-	}
-
-	var (
-		bestMove  *chess.Move
-		bestValue float64
-	)
-
-	for m, v := range scoredMoves {
-		if bestMove == nil {
-			bestMove = &m
-			bestValue = v
-		} else {
-			if maxPlayer && bestValue < v {
-				bestMove = &m
-				bestValue = v
-			} else if !maxPlayer && v < bestValue {
-				bestMove = &m
-				bestValue = v
-			}
-		}
-	}
-	return bestMove
+func SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
+	startingDepth := 3
+	return minimax(pos, startingDepth, maxPlayer).bestMove
 }
 
 // minimax estimates the value of a position pos using the minimax algorithm,
 // which minimizes loss for the given player, assuming the other player always
 // makes an optimal move.
-func minimax(pos *chess.Position, depth int, maxPlayer bool) (posValue float64) {
+func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 	if depth == 0 || len(pos.ValidMoves()) == 0 {
-		return evaluatePosition(pos)
+		return &positionScore {
+			value: evaluatePosition(pos),
+		}
 	}
+
+	scored := &positionScore {}
+	var comparator func(float64, float64) float64
 
 	if maxPlayer {
-		posValue = -9999
-		for _, m := range pos.ValidMoves() {
-			posValue = math.Max(posValue, minimax(pos.Update(m), depth - 1, false))
-		}
+		scored.value = -9999
+		comparator = math.Max
 	} else {
-		posValue = 9999
-		for _, m := range pos.ValidMoves() {
-			posValue = math.Min(posValue, minimax(pos.Update(m), depth - 1, true))
-		}
+		scored.value = 9999
+		comparator = math.Min
 	}
 
-	return posValue
+	for _, m := range pos.ValidMoves() {
+		scored = best(comparator, scored, minimax(pos.Update(m), depth - 1, !maxPlayer))
+	}
+
+	return scored
+}
+
+type positionScore struct {
+	// value is a heuristic value of the board. For more, see evaluatePosition.
+	value float64
+	// bestMove is the optimal next move that should be made for the current player to achieve
+	// the best value of the position.
+	bestMove *chess.Move
+}
+
+// best compares two positions and returns the 'better' position, as determined by the 
+// comparator function. In the case that the positions are of equal value, position a
+// is returned.
+func best(comparator func(float64, float64) float64, a, b *positionScore) *positionScore {
+	// remember to check for nil in struct values
+	return nil
 }
 
 // pieceVals uses Forsyth-Edwards Notation (FEN) conventions to represent pieces.
