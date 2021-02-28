@@ -31,12 +31,12 @@ type positionScore struct {
 // makes an optimal move.
 func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 	if depth == 0 || len(pos.ValidMoves()) == 0 {
-		return &positionScore {
+		return &positionScore{
 			value: evaluatePosition(pos),
 		}
 	}
 
-	bestScore := &positionScore {}
+	bestScore := &positionScore{}
 	var comparator func(float64, float64) float64
 
 	if maxPlayer {
@@ -49,8 +49,8 @@ func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 
 	for _, m := range pos.ValidMoves() {
 		candidate := &positionScore{
-			move: m,
-			value: minimax(pos.Update(m), depth - 1, !maxPlayer).value,
+			move:  m,
+			value: minimax(pos.Update(m), depth-1, !maxPlayer).value,
 		}
 
 		bestScore = best(comparator, bestScore, candidate)
@@ -59,7 +59,7 @@ func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 	return bestScore
 }
 
-// best compares two positions and returns the 'better' position, as determined by the 
+// best compares two positions and returns the 'better' position, as determined by the
 // comparator function. In the case that the positions are of equal value, position `a`
 // is returned.
 func best(comparator func(float64, float64) float64, a, b *positionScore) *positionScore {
