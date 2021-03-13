@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"strings"
@@ -35,6 +36,7 @@ func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 			value: evaluatePosition(pos),
 		}
 	}
+	pos.Hash()
 
 	bestScore := &positionScore{}
 	var comparator func(float64, float64) float64
@@ -48,6 +50,7 @@ func minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 	}
 
 	for _, m := range pos.ValidMoves() {
+		fmt.Printf("Evaluating move %v\n", m)
 		candidate := &positionScore{
 			move:  m,
 			value: minimax(pos.Update(m), depth-1, !maxPlayer).value,
