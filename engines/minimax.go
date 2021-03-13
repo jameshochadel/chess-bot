@@ -10,7 +10,7 @@ import (
 	"github.com/notnil/chess"
 )
 
-type MinimaxEngine struct {}
+type MinimaxEngine struct{}
 
 // SuggestedMove calculates the most advantageous move for the player. It currently works
 // synchronously, but can probably be made concurrent with goroutines.

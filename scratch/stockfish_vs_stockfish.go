@@ -3,7 +3,7 @@ package stockfishvs
 import (
 	"fmt"
 	"time"
-	
+
 	"github.com/notnil/chess"
 	"github.com/notnil/chess/uci"
 )
