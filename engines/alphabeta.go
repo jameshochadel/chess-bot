@@ -8,19 +8,19 @@ import (
 	"github.com/notnil/chess"
 )
 
-type MinimaxEngine struct{}
+type AlphaBetaEngine struct{}
 
 // SuggestedMove calculates the most advantageous move for the player. It currently works
 // synchronously, but can probably be made concurrent with goroutines.
-func (e *MinimaxEngine) SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
+func (e *AlphaBetaEngine) SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 	startingDepth := 3
-	return e.minimax(pos, startingDepth, maxPlayer).move
+	return e.alphabeta(pos, startingDepth, maxPlayer).move
 }
 
 // minimax estimates the value of a position pos using the minimax algorithm,
 // which minimizes loss for the given player, assuming the other player always
 // makes an optimal move.
-func (e *MinimaxEngine) minimax(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
+func (e *AlphaBetaEngine) alphabeta(pos *chess.Position, depth int, maxPlayer bool) *positionScore {
 	if depth == 0 || len(pos.ValidMoves()) == 0 {
 		return &positionScore{
 			value: e.evaluatePosition(pos),
@@ -43,7 +43,7 @@ func (e *MinimaxEngine) minimax(pos *chess.Position, depth int, maxPlayer bool) 
 		fmt.Printf("Evaluating move %v\n", m)
 		candidate := &positionScore{
 			move:  m,
-			value: e.minimax(pos.Update(m), depth-1, !maxPlayer).value,
+			value: e.alphabeta(pos.Update(m), depth-1, !maxPlayer).value,
 		}
 
 		bestScore = best(comparator, bestScore, candidate)
@@ -55,7 +55,7 @@ func (e *MinimaxEngine) minimax(pos *chess.Position, depth int, maxPlayer bool) 
 // evaluatePosition returns a heuristic value of the board, where positive values
 // are advantageous for the white (max) player and negative values are advantageous
 // for the black (min) player.
-func (e *MinimaxEngine) evaluatePosition(pos *chess.Position) float64 {
+func (e *AlphaBetaEngine) evaluatePosition(pos *chess.Position) float64 {
 	str := pos.String()
 	var acc float64
 

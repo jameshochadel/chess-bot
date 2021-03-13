@@ -31,7 +31,9 @@ func TestEvaluatePosition(t *testing.T) {
 			}
 			game := chess.NewGame(updateFunc)
 
-			actual := evaluatePosition(game.Position())
+			engine := MinimaxEngine{}
+
+			actual := engine.evaluatePosition(game.Position())
 			if actual != tc.Expected {
 				t.Fatalf("expected %v, got %v", tc.Expected, actual)
 			}
