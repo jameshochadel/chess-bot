@@ -6,11 +6,12 @@ import (
 
 	"github.com/notnil/chess"
 
-	"github.com/jameshochadel/chess-bot/engine"
+	"github.com/jameshochadel/chess-bot/engines"
 )
 
 func main() {
 	game := chess.NewGame()
+	engine := engines.MinimaxEngine{}
 
 	for game.Outcome() == chess.NoOutcome {
 		// how to do context with timeout? basically want to go as far as possible until timeout.

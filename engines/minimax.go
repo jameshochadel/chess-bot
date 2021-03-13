@@ -1,4 +1,4 @@
-package engine
+package engines
 
 import (
 	"fmt"
@@ -10,9 +10,11 @@ import (
 	"github.com/notnil/chess"
 )
 
+type MinimaxEngine struct {}
+
 // SuggestedMove calculates the most advantageous move for the player. It currently works
 // synchronously, but can probably be made concurrent with goroutines.
-func SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
+func (e *MinimaxEngine) SuggestedMove(pos *chess.Position, maxPlayer bool) *chess.Move {
 	startingDepth := 3
 	return minimax(pos, startingDepth, maxPlayer).move
 }
