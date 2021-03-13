@@ -26,16 +26,15 @@ func (e *AlphaBetaEngine) alphabeta(pos *chess.Position, depth int, maxPlayer bo
 			value: e.evaluatePosition(pos),
 		}
 	}
-	pos.Hash()
 
 	bestScore := &positionScore{}
 	var comparator func(float64, float64) float64
 
 	if maxPlayer {
-		bestScore.value = -9999
+		bestScore.value = math.Inf(-1)
 		comparator = math.Max
 	} else {
-		bestScore.value = 9999
+		bestScore.value = math.Inf(1)
 		comparator = math.Min
 	}
 
